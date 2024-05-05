@@ -1,6 +1,8 @@
 JTUG - JSON Tagged Union Go
 ===========================
 
+[Playground - try it out yourself](https://go.dev/play/p/lAXzITidjBo)
+
 Deserialize (unmarshal) tagged unions from JSON into go structs.
 ----------------------------------------------------------------
 
@@ -105,7 +107,7 @@ Nested structs
 --------------
 
 It is possible for your struct types to have fields that are tagged unions themselves.
-See the `nested_test.go` for an example.
+See `nested_test.go` for an example.
 
 Advantages of `jtug`
 --------------------
@@ -113,6 +115,7 @@ Advantages of `jtug`
 * Zero dependencies.
 * Limited amount of boilerplate, only mapper and some aliases.
 * The JSON format works well with TypeScript and Python.
+* No code generation.
 
 Limitations
 -----------
@@ -120,6 +123,7 @@ Limitations
 Go does not have tagged unions, sum types, or real enums.
 Every way to represent those concepts in go has some imperfections.
 Interfaces are the blessed way to do polymorphism in go.
+If you are not concerned about JSON, then interfaces are probably the way to go.
 
 Cannot unmarshal a root level tagged union
 ------------------------------------------
