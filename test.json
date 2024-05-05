@@ -1,0 +1,53 @@
+{
+  "list": [
+    {
+      "tag": "A",
+      "data": 2
+    },
+    {
+      "tag": "B",
+      "child": {
+        "tag": "B",
+        "child": {
+          "tag": "B",
+          "child": {
+            "tag": "B",
+            "child": {
+              "tag": "A",
+              "data": -1
+            }
+          }
+        }
+      }
+    },
+    {
+      "tag": "C",
+      "children": [
+        {
+          "tag": "C",
+          "children": [
+            {
+              "tag": "B",
+              "child": {
+                "tag": "A",
+                "data": -1
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "one": {
+    "tag": "B",
+    "child": {
+      "tag": "C",
+      "children": [
+        {
+          "tag": "A",
+          "data": 1
+        }
+      ]
+    }
+  }
+}
