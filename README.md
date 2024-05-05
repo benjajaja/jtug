@@ -94,6 +94,8 @@ switch t := container.Target.(type) {
 }
 ```
 
+If your tag field is not "type", then the Mapper can implement `JSONTag() string` (it must return the whole go tag, for example `json:"mytag"`).
+
 Serialize (marshal)
 -------------------
 

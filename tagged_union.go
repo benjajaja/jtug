@@ -5,23 +5,14 @@ import (
 	"reflect"
 )
 
-type Tag interface {
-	comparable
-}
+// A tagged union type, described only by the type of the tag.
+type Union[T tag] any
 
-type Mapper[T Tag] interface {
-	Unmarshal(b []byte, t T) (Union[T], error)
-}
+// A list of tagged unions with a tag-to-struct mapper.
+type UnionList[T tag, M mapper[T]] []Union[T]
 
-type Tagger interface {
-	JSONTag() string
-}
-
-type Union[T Tag] any
-
-type UnionList[T Tag, M Mapper[T]] []Union[T]
-
-func UnmarshalTaggedField[M Mapper[T], S any, T comparable](
+// Unmarshal `bytes` into `structPointer` with a tag-to-struct mapper and a reference to the tag field.
+func UnmarshalTaggedField[M mapper[T], S any, T comparable](
 	structPointer *S,
 	field any,
 	bytes []byte,
@@ -67,6 +58,7 @@ func UnmarshalTaggedField[M Mapper[T], S any, T comparable](
 	return nil
 }
 
+// UnionList or its aliases already implement UnmarshalJSON, no need to use UnmarshalTaggedField.
 func (f *UnionList[T, M]) UnmarshalJSON(data []byte) error {
 	factTypes := []tempUnionAlias[T, M]{}
 	err := json.Unmarshal(data, &factTypes)
@@ -79,12 +71,23 @@ func (f *UnionList[T, M]) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-type tempUnion[T Tag] struct {
+type tag any
+
+type mapper[T tag] interface {
+	Unmarshal(b []byte, t T) (Union[T], error)
+}
+
+type tagger interface {
+	JSONTag() string
+}
+
+
+type tempUnion[T tag] struct {
 	Tag T
 	out any
 }
 
-type tempUnionAlias[T Tag, M Mapper[T]] tempUnion[T]
+type tempUnionAlias[T tag, M mapper[T]] tempUnion[T]
 
 func (f *tempUnionAlias[T, M]) UnmarshalJSON(b []byte) error {
 	var mapper M
@@ -97,7 +100,7 @@ func (f *tempUnionAlias[T, M]) UnmarshalJSON(b []byte) error {
 		originalType.Field(1),
 	}
 	jsonTag := `json:"type"`
-	if tagger, ok := any(mapper).(Tagger); ok {
+	if tagger, ok := any(mapper).(tagger); ok {
 		jsonTag = tagger.JSONTag()
 	}
 	fields[0].Tag = reflect.StructTag(jsonTag)
